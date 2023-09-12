@@ -24,5 +24,5 @@ export function Search() {
     router.push(pathname + '?' + createQueryString('title', value))
   }
 
-  return <Input onChange={onChange} />
+  return <Input value={searchParams.get('title') || ''} onChange={onChange} />
 }

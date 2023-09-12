@@ -2,10 +2,9 @@ import { Collection } from '@/app/collection'
 import { Search } from '@/app/search'
 import galnas from '../data/galeri-nasional.json'
 
-const items: Array<Collection> = galnas.paintings.data.concat(
-  galnas.sculptures.data,
-  galnas.others.data,
-)
+const items: Array<Collection> = galnas.paintings.data
+  .concat(galnas.sculptures.data, galnas.others.data)
+  .filter((item) => Boolean(item?.image))
 
 const createColumns = (data: Array<Collection>) => {
   let col = 0
@@ -20,13 +19,13 @@ const createColumns = (data: Array<Collection>) => {
 }
 
 export default async function Home({ searchParams }: { searchParams: { title: string } }) {
-  const collections = items.filter(
-    (item) => item.title.toLowerCase().includes(searchParams.title) && Boolean(item?.image),
-  )
+  const collections = searchParams.title
+    ? items.filter((item) => item.title.toLowerCase().includes(searchParams.title))
+    : items
   const columns = createColumns(collections)
 
   return (
-    <div className="flex w-full gap-10">
+    <div className="flex w-full gap-10 bg-amber-50">
       <div className="flex w-1/4">
         <Collection data={columns[0]} />
       </div>
@@ -40,7 +39,7 @@ export default async function Home({ searchParams }: { searchParams: { title: st
               </div>
             </header>
             <main>
-              <h1 className="font-serif text-9xl font-medium">
+              <h1 className="font-serif text-9xl font-medium text-zinc-900">
                 Galeri
                 <br />
                 Nasional
