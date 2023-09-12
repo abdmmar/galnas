@@ -1,5 +1,6 @@
 import { Collection } from '@/app/collection'
 import { Search } from '@/app/search'
+import Link from 'next/link'
 import galnas from '../data/galeri-nasional.json'
 
 const items: Array<Collection> = galnas.paintings.data
@@ -25,7 +26,7 @@ export default async function Home({ searchParams }: { searchParams: { title: st
   const columns = createColumns(collections)
 
   return (
-    <div className="flex w-full gap-10 bg-amber-50">
+    <div className="flex min-h-screen w-full gap-10 bg-background">
       <div className="flex w-1/4">
         <Collection data={columns[0]} />
       </div>
@@ -33,13 +34,15 @@ export default async function Home({ searchParams }: { searchParams: { title: st
         <div className="flex w-full flex-col gap-10">
           <div className="mt-10 flex flex-col gap-20">
             <header className="flex items-center justify-between">
-              <div>Dokumentasi</div>
+              <Link href="/doc" className="text-secondary-foreground">
+                Dokumentasi
+              </Link>
               <div>
                 <Search />
               </div>
             </header>
             <main>
-              <h1 className="font-serif text-9xl font-medium text-zinc-900">
+              <h1 className="font-serif text-9xl font-medium text-foreground">
                 Galeri
                 <br />
                 Nasional

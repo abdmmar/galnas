@@ -33,8 +33,8 @@ export type Collections = {
 export function Collection({ data }: { data: Array<Collection> }) {
   return (
     <ul className="flex w-full flex-col gap-10">
-      {data.map((c) => (
-        <li key={c.title}>
+      {data.map((c, i) => (
+        <li key={c.title + c.image}>
           <Image
             src={'/images/' + c.image}
             alt={c.title}

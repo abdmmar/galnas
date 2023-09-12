@@ -1,6 +1,7 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
 
@@ -24,5 +25,17 @@ export function Search() {
     router.push(pathname + '?' + createQueryString('title', value))
   }
 
-  return <Input value={searchParams.get('title') || ''} onChange={onChange} />
+  return (
+    <div className="relative">
+      <Input
+        placeholder="Cari koleksi"
+        className="pr-8"
+        value={searchParams.get('title') || ''}
+        onChange={onChange}
+      />
+      <div className="absolute inset-y-0 right-0 flex items-center p-2">
+        <MagnifyingGlassIcon className="h-4 w-4 text-secondary-foreground" />
+      </div>
+    </div>
+  )
 }

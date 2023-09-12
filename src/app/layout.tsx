@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="pr-[calc(17px_-_(100vw_-_100%))]">
       <body className={`${inter.variable} ${playfair.variable} ${inter.className}`}>
         {children}
       </body>
