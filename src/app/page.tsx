@@ -1,36 +1,6 @@
+import { Collection } from '@/app/collection'
 import { Search } from '@/app/search'
-import Image from 'next/image'
 import galnas from '../data/galeri-nasional.json'
-
-type Collection = {
-  title: string
-  image?: string
-  artist: {
-    name: string
-    link: string
-  }
-  year: number
-  medium: string
-  description: string
-  link: string
-  size?: string
-}
-
-type Collections = {
-  total: number
-  paintings: {
-    total: number
-    data: Array<Collection>
-  }
-  sculptures: {
-    total: number
-    data: Array<Collection>
-  }
-  others: {
-    total: number
-    data: Array<Collection>
-  }
-}
 
 const items: Array<Collection> = galnas.paintings.data.concat(
   galnas.sculptures.data,
@@ -58,28 +28,11 @@ export default async function Home({ searchParams }: { searchParams: { title: st
   return (
     <div className="flex w-full gap-10">
       <div className="flex w-1/4">
-        <ul className="w-full">
-          {columns[0].map((c) => (
-            <li>
-              <Image
-                src={'/images/' + c.image}
-                alt={c.title}
-                sizes="100vw"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                }}
-                width={500}
-                height={300}
-              />
-              {c.title}
-            </li>
-          ))}
-        </ul>
+        <Collection data={columns[0]} />
       </div>
       <div className="flex w-1/2">
         <div className="flex w-full flex-col gap-10">
-          <div className="flex flex-col gap-10">
+          <div className="mt-10 flex flex-col gap-20">
             <header className="flex items-center justify-between">
               <div>Dokumentasi</div>
               <div>
@@ -87,7 +40,7 @@ export default async function Home({ searchParams }: { searchParams: { title: st
               </div>
             </header>
             <main>
-              <h1>
+              <h1 className="font-serif text-9xl font-medium">
                 Galeri
                 <br />
                 Nasional
@@ -97,64 +50,13 @@ export default async function Home({ searchParams }: { searchParams: { title: st
             </main>
           </div>
           <div className="flex w-full flex-row gap-10">
-            <ul className="w-full">
-              {columns[1].map((c) => (
-                <li>
-                  <Image
-                    src={'/images/' + c.image}
-                    alt={c.title}
-                    sizes="100vw"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                    }}
-                    width={500}
-                    height={300}
-                  />
-                  {c.title}
-                </li>
-              ))}
-            </ul>
-            <ul className="w-full">
-              {columns[2].map((c) => (
-                <li>
-                  <Image
-                    src={'/images/' + c.image}
-                    alt={c.title}
-                    sizes="100vw"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                    }}
-                    width={500}
-                    height={300}
-                  />
-                  {c.title}
-                </li>
-              ))}
-            </ul>
+            <Collection data={columns[1]} />
+            <Collection data={columns[2]} />
           </div>
         </div>
       </div>
       <div className="flex w-1/4">
-        <ul className="w-full">
-          {columns[3].map((c) => (
-            <li>
-              <Image
-                src={'/images/' + c.image}
-                alt={c.title}
-                sizes="100vw"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                }}
-                width={500}
-                height={300}
-              />
-              {c.title}
-            </li>
-          ))}
-        </ul>
+        <Collection data={columns[3]} />
       </div>
     </div>
   )
