@@ -12,8 +12,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="pr-[calc(17px_-_(100vw_-_100%))]">
-      <body className={`${inter.variable} ${playfair.variable} ${inter.className}`}>
+    <html lang="en" className="overflow-y-scroll">
+      <body
+        className={`${inter.variable} ${playfair.variable} ${inter.className}`}
+        style={{
+          marginRight: '0 !important',
+        }}
+      >
         {children}
       </body>
     </html>

@@ -1,5 +1,6 @@
 import { Collection } from '@/app/collection'
 import { Search } from '@/app/search'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import galnas from '../data/galeri-nasional.json'
 
@@ -34,12 +35,12 @@ export default async function Home({ searchParams }: { searchParams: { title: st
         <div className="flex w-full flex-col gap-10">
           <div className="mt-10 flex flex-col gap-20">
             <header className="flex items-center justify-between">
-              <Link href="/doc" className="text-secondary-foreground">
-                Dokumentasi
-              </Link>
-              <div>
-                <Search />
-              </div>
+              <Button variant={'link'} asChild>
+                <Link href="/doc" className="text-secondary-foreground">
+                  Dokumentasi
+                </Link>
+              </Button>
+              <Search />
             </header>
             <main>
               <h1 className="font-serif text-9xl font-medium text-foreground">
