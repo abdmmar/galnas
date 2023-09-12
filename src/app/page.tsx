@@ -1,4 +1,5 @@
 import { Search } from '@/app/search'
+import Image from 'next/image'
 import galnas from '../data/galeri-nasional.json'
 
 type Collection = {
@@ -49,7 +50,9 @@ const createColumns = (data: Array<Collection>) => {
 }
 
 export default async function Home({ searchParams }: { searchParams: { title: string } }) {
-  const collections = items.filter((item) => item.title.toLowerCase().includes(searchParams.title))
+  const collections = items.filter(
+    (item) => item.title.toLowerCase().includes(searchParams.title) && Boolean(item?.image),
+  )
   const columns = createColumns(collections)
 
   return (
@@ -57,7 +60,20 @@ export default async function Home({ searchParams }: { searchParams: { title: st
       <div className="flex w-1/4">
         <ul className="w-full">
           {columns[0].map((c) => (
-            <li>{c.title}</li>
+            <li>
+              <Image
+                src={'/images/' + c.image}
+                alt={c.title}
+                sizes="100vw"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                }}
+                width={500}
+                height={300}
+              />
+              {c.title}
+            </li>
           ))}
         </ul>
       </div>
@@ -83,12 +99,38 @@ export default async function Home({ searchParams }: { searchParams: { title: st
           <div className="flex w-full flex-row gap-10">
             <ul className="w-full">
               {columns[1].map((c) => (
-                <li>{c.title}</li>
+                <li>
+                  <Image
+                    src={'/images/' + c.image}
+                    alt={c.title}
+                    sizes="100vw"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                    }}
+                    width={500}
+                    height={300}
+                  />
+                  {c.title}
+                </li>
               ))}
             </ul>
             <ul className="w-full">
               {columns[2].map((c) => (
-                <li>{c.title}</li>
+                <li>
+                  <Image
+                    src={'/images/' + c.image}
+                    alt={c.title}
+                    sizes="100vw"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                    }}
+                    width={500}
+                    height={300}
+                  />
+                  {c.title}
+                </li>
               ))}
             </ul>
           </div>
@@ -97,7 +139,20 @@ export default async function Home({ searchParams }: { searchParams: { title: st
       <div className="flex w-1/4">
         <ul className="w-full">
           {columns[3].map((c) => (
-            <li>{c.title}</li>
+            <li>
+              <Image
+                src={'/images/' + c.image}
+                alt={c.title}
+                sizes="100vw"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                }}
+                width={500}
+                height={300}
+              />
+              {c.title}
+            </li>
           ))}
         </ul>
       </div>
