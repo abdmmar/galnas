@@ -1,50 +1,50 @@
 import Image from 'next/image'
 
 export type Collection = {
-  title: string
-  image?: string
   artist: {
-    name: string
     link: string
+    name: string
   }
-  year: number
-  medium: string
   description: string
+  image?: string
   link: string
+  medium: string
   size?: string
+  title: string
+  year: number
 }
 
 export type Collections = {
-  total: number
-  paintings: {
-    total: number
+  others: {
     data: Array<Collection>
+    total: number
+  }
+  paintings: {
+    data: Array<Collection>
+    total: number
   }
   sculptures: {
-    total: number
     data: Array<Collection>
-  }
-  others: {
     total: number
-    data: Array<Collection>
   }
+  total: number
 }
 
 export function Collection({ data }: { data: Array<Collection> }) {
   return (
     <ul className="flex w-full flex-col gap-10">
-      {data.map((c, i) => (
+      {data.map((c) => (
         <li key={c.title + c.image}>
           <Image
-            src={'/images/' + c.image}
             alt={c.title}
+            height={300}
             sizes="100vw"
+            src={'/images/' + c.image}
             style={{
-              width: '100%',
               height: 'auto',
+              width: '100%',
             }}
             width={500}
-            height={300}
           />
         </li>
       ))}

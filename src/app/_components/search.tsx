@@ -1,5 +1,12 @@
 'use client'
 
+import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
+import { MagnifyingGlassIcon, MixerVerticalIcon } from '@radix-ui/react-icons'
+import { AnimatePresence } from 'framer-motion'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import * as React from 'react'
+
+import { ResetButton } from '@/app/_components/reset-button'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -18,11 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
-import { MagnifyingGlassIcon, MixerVerticalIcon, ResetIcon } from '@radix-ui/react-icons'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import * as React from 'react'
 
 type Checked = DropdownMenuCheckboxItemProps['checked']
 type Sort = '' | 'title:asc' | 'title:desc' | 'year:asc' | 'year:desc'
@@ -30,29 +32,29 @@ type Sort = '' | 'title:asc' | 'title:desc' | 'year:asc' | 'year:desc'
 export function Search() {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()!
+  const searchParameters = useSearchParams()!
 
   const [filter, setFilter] = React.useState<
     Record<'medium' | 'classification', Record<string, Checked>>
   >({ classification: {}, medium: {} })
   const isFiltered =
-    Object.values(filter.classification).some((v) => v === true) ||
-    Object.values(filter.medium).some((v) => v === true)
+    Object.values(filter.classification).includes(true) ||
+    Object.values(filter.medium).includes(true)
   const [sort, setSort] = React.useState<Sort>('')
   const isSorted = sort !== ''
 
   const createQueryString = React.useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
+      const parameters = new URLSearchParams(searchParameters)
+      parameters.set(name, value)
 
-      return params.toString()
+      return parameters.toString()
     },
-    [searchParams],
+    [searchParameters],
   )
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
     router.push(pathname + '?' + createQueryString('title', value))
   }
 
@@ -70,31 +72,18 @@ export function Search() {
       <DropdownMenu>
         <div className="relative">
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button size="icon" variant="outline">
               <MixerVerticalIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          {isFiltered && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="absolute -right-2 -top-3">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="h-4 w-4 rounded-full p-0"
-                      onClick={() => setFilter({ medium: {}, classification: {} })}
-                    >
-                      <ResetIcon className="h-[11px] w-[11px]" />
-                    </Button>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="px-1 py-1" sideOffset={0}>
-                  <span>Reset Filter</span>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+          <AnimatePresence>
+            {isFiltered && (
+              <ResetButton
+                onClick={() => setFilter({ classification: {}, medium: {} })}
+                tooltip="Reset Filter"
+              />
+            )}
+          </AnimatePresence>
         </div>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Classification</DropdownMenuLabel>
@@ -127,32 +116,14 @@ export function Search() {
           </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Select value={sort} onValueChange={(v) => onSort(v as Sort)}>
+      <Select onValueChange={(v) => onSort(v as Sort)} value={sort}>
         <div className="relative">
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Urutkan" />
           </SelectTrigger>
-          {isSorted && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="absolute -right-2 -top-3">
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      className="h-4 w-4 rounded-full p-0"
-                      onClick={() => onSort('')}
-                    >
-                      <ResetIcon className="h-[11px] w-[11px]" />
-                    </Button>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="px-1 py-1" sideOffset={0}>
-                  <span>Reset Urutkan</span>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+          <AnimatePresence>
+            {isSorted && <ResetButton onClick={() => onSort('')} tooltip="Reset Urutkan" />}
+          </AnimatePresence>
         </div>
         <SelectContent>
           <SelectGroup>
@@ -167,10 +138,10 @@ export function Search() {
       </Select>
       <div className="relative">
         <Input
-          placeholder="Cari koleksi"
           className="pr-8"
-          value={searchParams.get('title') || ''}
           onChange={onChange}
+          placeholder="Cari koleksi"
+          value={searchParameters.get('title') || ''}
         />
         <div className="absolute inset-y-0 right-0 flex items-center p-2">
           <MagnifyingGlassIcon className="h-4 w-4 text-secondary-foreground" />
