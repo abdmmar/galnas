@@ -1,6 +1,5 @@
 'use client'
 
-import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
 import { MagnifyingGlassIcon, MixerVerticalIcon } from '@radix-ui/react-icons'
 import { AnimatePresence } from 'framer-motion'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -26,7 +25,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-type Checked = DropdownMenuCheckboxItemProps['checked']
 type Sort = '' | 'title:asc' | 'title:desc' | 'year:asc' | 'year:desc'
 
 export function Search() {
@@ -102,34 +100,53 @@ type FilterType = 'medium' | 'classification'
 
 /**
  * Filter collections.
- * ?classification=paintings,sculpture&medium=1,2,3,4,5,6&sort=title-asc&search=kapal
+ * ?classification=paintings,sculpture&medium=1,2,3,4,5,6
  */
 function SearchFilter() {
-  // const searchParams = useSearchParams()
-  const [filter, setFilter] = React.useState<Record<FilterType, Record<string, Checked>>>({
-    classification: {},
-    medium: {},
-  })
-  const isFiltered =
-    Object.values(filter.classification).includes(true) ||
-    Object.values(filter.medium).includes(true)
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  // const createQueryString = React.useCallback(
-  //   (name: string, value: string) => {
-  //     const parameters = new URLSearchParams(searchParams)
-  //     parameters.set(name, value)
+  const classificationFilter = searchParams.get('classification')?.split(',') || []
+  const mediumFilter = searchParams.get('medium')?.split(',') || []
+  const isFiltered = classificationFilter.length > 0 || mediumFilter.length > 0
 
-  //     return parameters.toString()
-  //   },
-  //   [searchParams],
-  // )
+  const createQueryString = React.useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams)
 
-  const onFilter = (type: FilterType, key: string, value: boolean) => {
-    const f = {
-      ...filter,
-      [`${type}`]: { ...filter[`${type}`], [`${key}`]: value },
-    }
-    setFilter(f)
+      if (searchParams.has(name)) {
+        let p = searchParams.get(name)?.split(',') || []
+
+        if (p.includes(value)) {
+          p = p.filter((v) => v !== value)
+        } else {
+          p.push(value)
+        }
+
+        if (p.length === 0) {
+          params.delete(name)
+        } else {
+          params.set(name, p.join(','))
+        }
+      } else {
+        params.set(name, value)
+      }
+
+      return params.toString()
+    },
+    [searchParams],
+  )
+
+  const resetFilter = () => {
+    const params = new URLSearchParams(searchParams)
+    params.delete('classification')
+    params.delete('medium')
+    router.push(pathname + '?' + params.toString())
+  }
+
+  const onFilter = (type: FilterType, value: string) => {
+    router.push(pathname + '?' + createQueryString(type, value))
   }
 
   return (
@@ -141,40 +158,35 @@ function SearchFilter() {
           </Button>
         </DropdownMenuTrigger>
         <AnimatePresence>
-          {isFiltered && (
-            <ResetButton
-              onClick={() => setFilter({ classification: {}, medium: {} })}
-              tooltip="Reset Filter"
-            />
-          )}
+          {isFiltered && <ResetButton onClick={resetFilter} tooltip="Reset Filter" />}
         </AnimatePresence>
       </div>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Classification</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
-          checked={filter.classification?.['paintings']}
-          onCheckedChange={(c) => onFilter('classification', 'paintings', c)}
+          checked={classificationFilter.includes('paintings')}
+          onCheckedChange={() => onFilter('classification', 'paintings')}
         >
           Paintings
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
-          checked={filter.classification?.['sculpture']}
-          onCheckedChange={(c) => onFilter('classification', 'sculpture', c)}
+          checked={classificationFilter.includes('sculpture')}
+          onCheckedChange={() => onFilter('classification', 'sculpture')}
         >
           Sculpture
         </DropdownMenuCheckboxItem>
         <DropdownMenuLabel>Medium</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
-          checked={filter.medium?.['Cat minyak pada kanvas.']}
-          onCheckedChange={(c) => onFilter('medium', 'Cat minyak pada kanvas.', c)}
+          checked={mediumFilter.includes('Cat minyak pada kanvas.')}
+          onCheckedChange={() => onFilter('medium', 'Cat minyak pada kanvas.')}
         >
           Cat minyak pada kanvas.
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
-          checked={filter.medium?.['Akrilik pada kertas.']}
-          onCheckedChange={(c) => onFilter('medium', 'Akrilik pada kertas.', c)}
+          checked={mediumFilter.includes('Akrilik pada kertas.')}
+          onCheckedChange={() => onFilter('medium', 'Akrilik pada kertas.')}
         >
           Akrilik pada kertas.
         </DropdownMenuCheckboxItem>
