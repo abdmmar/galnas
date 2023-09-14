@@ -25,60 +25,45 @@ const createColumns = (data: Array<Collection>) => {
   return columns
 }
 
+type Filter = { title?: string; classification?: string[]; medium?: string[] }
+type FilterKey = keyof Filter
+
+function applyFilter(items: Collection[], filter: Filter) {
+  return items.filter((item) => {
+    return Object.entries(filter).every(([key_, value]) => {
+      if (value == undefined || (Array.isArray(value) && value.length === 0)) return true // Skip undefined or null values
+
+      const key = key_ as FilterKey
+
+      switch (key) {
+        case 'title': {
+          return item.title.toLowerCase().includes(value as string)
+        }
+        case 'classification': {
+          return (value as string[]).includes(item.classification)
+        }
+        case 'medium': {
+          return (value as string[]).includes(item.medium)
+        }
+        default: {
+          return false
+        }
+      }
+    })
+  })
+}
+
 type SearchParams = { title?: string; classification?: string; medium?: string }
-type SearchParamsKey = keyof SearchParams
 type Props = {
   searchParams: SearchParams
 }
-type Filter = { title?: string; classification?: string[]; medium?: string[] }
-
-function buildFilter(paramsObj: Filter) {
-  const filter: Filter = {}
-
-  for (const key in paramsObj) {
-    const value = paramsObj[key as SearchParamsKey]
-
-    if (typeof value === 'string' && value) {
-      filter[key as 'title'] = value
-    }
-
-    if (Array.isArray(value) && value.length > 0) {
-      filter[key as 'classification' | 'medium'] = value as string[]
-    }
-  }
-
-  return filter
-}
 
 export default async function Home({ searchParams }: Props) {
-  const filter = buildFilter({
+  const collections = applyFilter(items, {
     title: searchParams.title,
     classification: searchParams.classification?.split(','),
     medium: searchParams.medium?.split(','),
   })
-  const shouldFilter = filter?.title || filter?.classification || filter?.medium
-  const collections = shouldFilter
-    ? items.filter((item) => {
-        return Object.keys(filter).every((k) => {
-          const key = k as SearchParamsKey
-          const fil = filter[key]
-
-          if (fil && typeof fil === 'string') {
-            return item.title.toLowerCase().includes(fil)
-          }
-
-          if (key === 'classification' && Array.isArray(fil) && fil?.length > 0) {
-            return fil.includes(item.classification)
-          }
-
-          if (key === 'medium' && Array.isArray(fil) && fil?.length > 0) {
-            return fil.includes(item.medium)
-          }
-
-          return false
-        })
-      })
-    : items
   const columns = createColumns(collections)
 
   return (
