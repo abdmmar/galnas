@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button'
 import galnas from '../data/galeri-nasional.json'
 
 const items: Array<Collection> = [
-  ...galnas.paintings.data,
-  ...galnas.sculptures.data,
-  ...galnas.others.data,
+  ...galnas.paintings.data.map((item) => ({ classification: 'paintings', ...item })),
+  ...galnas.sculptures.data.map((item) => ({ classification: 'sculpture', ...item })),
+  ...galnas.others.data.map((item) => ({ classification: 'other', ...item })),
 ].filter((item) => Boolean(item?.image))
 
 const createColumns = (data: Array<Collection>) => {
@@ -25,9 +25,59 @@ const createColumns = (data: Array<Collection>) => {
   return columns
 }
 
-export default async function Home({ searchParams }: { searchParams: { title: string } }) {
-  const collections = searchParams.title
-    ? items.filter((item) => item.title.toLowerCase().includes(searchParams.title))
+type SearchParams = { title?: string; classification?: string; medium?: string }
+type SearchParamsKey = keyof SearchParams
+type Props = {
+  searchParams: SearchParams
+}
+type Filter = { title?: string; classification?: string[]; medium?: string[] }
+
+function buildFilter(paramsObj: Filter) {
+  const filter: Filter = {}
+
+  for (const key in paramsObj) {
+    const value = paramsObj[key as SearchParamsKey]
+
+    if (typeof value === 'string' && value) {
+      filter[key as 'title'] = value
+    }
+
+    if (Array.isArray(value) && value.length > 0) {
+      filter[key as 'classification' | 'medium'] = value as string[]
+    }
+  }
+
+  return filter
+}
+
+export default async function Home({ searchParams }: Props) {
+  const filter = buildFilter({
+    title: searchParams.title,
+    classification: searchParams.classification?.split(','),
+    medium: searchParams.medium?.split(','),
+  })
+  const shouldFilter = filter?.title || filter?.classification || filter?.medium
+  const collections = shouldFilter
+    ? items.filter((item) => {
+        return Object.keys(filter).every((k) => {
+          const key = k as SearchParamsKey
+          const fil = filter[key]
+
+          if (fil && typeof fil === 'string') {
+            return item.title.toLowerCase().includes(fil)
+          }
+
+          if (key === 'classification' && Array.isArray(fil) && fil?.length > 0) {
+            return fil.includes(item.classification)
+          }
+
+          if (key === 'medium' && Array.isArray(fil) && fil?.length > 0) {
+            return fil.includes(item.medium)
+          }
+
+          return false
+        })
+      })
     : items
   const columns = createColumns(collections)
 

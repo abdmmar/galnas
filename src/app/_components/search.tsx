@@ -30,26 +30,28 @@ type Sort = '' | 'title:asc' | 'title:desc' | 'year:asc' | 'year:desc'
 export function Search() {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParameters = useSearchParams()
+  const searchParams = useSearchParams()
 
   const [sort, setSort] = React.useState<Sort>('')
   const isSorted = sort !== ''
 
   const createQueryString = React.useCallback(
     (name: string, value: string) => {
-      const parameters = new URLSearchParams(searchParameters)
+      const parameters = new URLSearchParams(searchParams)
       parameters.set(name, value)
 
       return parameters.toString()
     },
-    [searchParameters],
+    [searchParams],
   )
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
 
     if (!value) {
-      router.push(pathname)
+      const params = new URLSearchParams(searchParams)
+      params.delete('title')
+      router.push(pathname + '?' + params.toString())
       return
     }
 
@@ -86,7 +88,7 @@ export function Search() {
           className="pr-8"
           onChange={onChange}
           placeholder="Cari koleksi"
-          value={searchParameters.get('title') || ''}
+          value={searchParams.get('title') || ''}
         />
         <div className="absolute inset-y-0 right-0 flex items-center p-2">
           <MagnifyingGlassIcon className="h-4 w-4 text-secondary-foreground" />
@@ -175,6 +177,12 @@ function SearchFilter() {
           onCheckedChange={() => onFilter('classification', 'sculpture')}
         >
           Sculpture
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={classificationFilter.includes('other')}
+          onCheckedChange={() => onFilter('classification', 'other')}
+        >
+          Other
         </DropdownMenuCheckboxItem>
         <DropdownMenuLabel>Medium</DropdownMenuLabel>
         <DropdownMenuSeparator />

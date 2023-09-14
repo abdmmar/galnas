@@ -1,6 +1,7 @@
 import Image from 'next/image'
 
 export type Collection = {
+  classification: string
   artist: {
     link: string
     name: string
