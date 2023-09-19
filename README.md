@@ -50,6 +50,11 @@ erDiagram
       String description
       String link NULL
       Int year
+      String classification FK
+    }
+
+    Classification {
+      String name PK
     }
 
     Medium {
@@ -65,4 +70,5 @@ erDiagram
 
     Collection }|--|{ Artist : haves
     Collection }|--|{ Medium : uses
+    Collection }|--|| Classification : is
 ```
