@@ -2,19 +2,32 @@ import Link from 'next/link'
 
 import { Collection } from '@/app/_components/collection'
 import { Search } from '@/app/_components/search'
+import { Collection as CollectionType } from '@/app/_types/collection'
 import { Button } from '@/components/ui/button'
 
 import galnas from '../data/galeri-nasional.json'
 
-const items: Array<Collection> = [
-  ...galnas.paintings.data.map((item) => ({ classification: 'paintings', ...item })),
-  ...galnas.sculptures.data.map((item) => ({ classification: 'sculpture', ...item })),
-  ...galnas.others.data.map((item) => ({ classification: 'other', ...item })),
+const items: Array<CollectionType> = [
+  ...galnas.paintings.data.map((item) => ({
+    ...item,
+    classification: 'painting',
+    year: item.year.toString(),
+  })),
+  ...galnas.sculptures.data.map((item) => ({
+    ...item,
+    classification: 'sculpture',
+    year: item.year.toString(),
+  })),
+  ...galnas.others.data.map((item) => ({
+    ...item,
+    classification: 'other',
+    year: item.year.toString(),
+  })),
 ].filter((item) => Boolean(item?.image))
 
-const createColumns = (data: Array<Collection>) => {
+const createColumns = (data: Array<CollectionType>) => {
   let col = 0
-  const columns: Array<Array<Collection>> = [[], [], [], []]
+  const columns: Array<Array<CollectionType>> = [[], [], [], []]
   for (const collection of data) {
     if (col > 3) {
       col = 0
@@ -28,7 +41,7 @@ const createColumns = (data: Array<Collection>) => {
 type Filter = { title?: string; classification?: string[]; medium?: string[] }
 type FilterKey = keyof Filter
 
-function applyFilter(items: Collection[], filter: Filter) {
+function applyFilter(items: CollectionType[], filter: Filter) {
   return items.filter((item) => {
     return Object.entries(filter).every(([key_, value]) => {
       if (value == undefined || (Array.isArray(value) && value.length === 0)) return true // Skip undefined or null values

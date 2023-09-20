@@ -1,24 +1,24 @@
 import Image from 'next/image'
 
-import { Collection } from '@/app/_types/collection'
+import { Collection as CollectionType } from '@/app/_types/collection'
 
 export type Collections = {
   others: {
-    data: Array<Collection>
+    data: Array<CollectionType>
     total: number
   }
   paintings: {
-    data: Array<Collection>
+    data: Array<CollectionType>
     total: number
   }
   sculptures: {
-    data: Array<Collection>
+    data: Array<CollectionType>
     total: number
   }
   total: number
 }
 
-export function Collection({ data }: { data: Array<Collection> }) {
+export function Collection({ data }: { data: Array<CollectionType> }) {
   return (
     <ul className="flex w-full flex-col gap-10">
       {data.map((c) => (
