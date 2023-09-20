@@ -1,43 +1,61 @@
-import { Client, neon } from '@neondatabase/serverless'
+import { Client } from '@neondatabase/serverless'
 import { NextResponse } from 'next/server'
-import * as z from 'zod'
 
+import { Collection, collectionSchema } from '@/app/_types/collection'
 import { flattenErrors } from '@/lib/utils'
 
-const sql = neon(process.env.DATABASE_URL as string)
-const collectionSchema = z.object({
-  title: z.string().nonempty({ message: 'Title is required' }),
-  description: z.string().nonempty({ message: 'Description is required' }),
-  classification: z.string().nonempty({ message: 'Classification is required' }),
-  year: z.string().nonempty({ message: 'Year is required' }),
-  medium: z.string().nonempty({ message: 'Medium is required' }),
-  artist: z.object(
-    {
-      name: z
-        .string({ required_error: 'Artist name is required' })
-        .nonempty({ message: 'Artist name is required' }),
-      link: z.string().optional(),
-    },
-    { required_error: 'Artist is required' },
-  ),
-  image: z.string().optional(),
-  link: z.string().optional(),
-  size: z.string().optional(),
-})
+export async function GET(request: Request) {
+  const url = new URL(request.url)
+  const titleParams = url.searchParams.get('title')
+  const classificationParams = url.searchParams.get('classification')
+  const mediumParams = url.searchParams.get('medium')
+  const sortParams = url.searchParams.get('sort')
+  const sortValue = sortParams ? sortParams.split(':') : undefined
+  const params = {
+    title: titleParams,
+    classification: classificationParams?.split(',') || undefined,
+    medium: mediumParams?.split(',') || undefined,
+    sort: sortValue
+      ? {
+          field: sortValue[0],
+          value: sortValue[1],
+        }
+      : undefined,
+  }
 
-type CollectionInput = z.infer<typeof collectionSchema>
+  console.log(params)
 
-export async function GET() {
-  const start = new Date()
-  const [dbResponse] = await sql`SELECT NOW();`
-  const dbNow = dbResponse && dbResponse.now ? dbResponse.now : ''
-  const end = new Date()
-  const diff = end.getTime() - start.getTime()
-  return NextResponse.json({ dbNow: dbNow, latency: diff })
+  const client = new Client(process.env.DATABASE_URL)
+
+  try {
+    await client.connect()
+
+    const result = await client.query('SELECT * FROM collection')
+    const totalRows = result.rowCount
+    const collections = result.rows
+
+    return NextResponse.json({
+      status: 'ok',
+      message: 'successfully get collections',
+      data: { total: totalRows, items: collections },
+    })
+  } catch (error) {
+    console.error('[GET] Collection :', error)
+
+    return NextResponse.json(
+      {
+        status: 'error',
+        message: 'failed to get collections',
+      },
+      { status: 400 },
+    )
+  } finally {
+    await client.end()
+  }
 }
 
 export async function POST(request: Request) {
-  const input: CollectionInput = await request.json()
+  const input: Collection = await request.json()
 
   const result = collectionSchema.safeParse(input)
 
@@ -45,7 +63,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         status: 'error',
-        message: 'Invalid input field',
+        message: 'invalid input field',
         error: flattenErrors(result.error.format()),
       },
       { status: 400 },
@@ -63,14 +81,14 @@ export async function POST(request: Request) {
         INSERT INTO classification (name) 
         VALUES ($1)
         ON CONFLICT DO NOTHING
-        RETURNING id
+        RETURNING name
       )
       SELECT * from inserted_classification
       UNION
-      SELECT id from classification WHERE name = $1`,
+      SELECT name from classification WHERE name = $1`,
       [result.data.classification],
     )
-    const classificationName = classificationResult.rows[0].id
+    const classificationName = classificationResult.rows[0].name
 
     const artistResult = await client.query(
       'INSERT INTO artist (name, link) VALUES ($1, $2) RETURNING id',
@@ -94,7 +112,7 @@ export async function POST(request: Request) {
 
     const collectionResult = await client.query(
       `INSERT INTO collection (title, description, image, year, link, size, classification) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
       [
         result.data.title,
         result.data.description,
@@ -119,14 +137,16 @@ export async function POST(request: Request) {
     await client.query('COMMIT')
 
     return NextResponse.json({
-      status: 'OK',
-      message: 'Successfully insert a collection',
+      status: 'ok',
+      message: 'successfully insert a collection',
       data: result.data,
     })
-  } catch {
+  } catch (error) {
+    console.error('[POST] Collection', error)
+
     await client.query('ROLLBACK')
     return NextResponse.json(
-      { status: 'Error', message: 'Error insert collection' },
+      { status: 'error', message: 'error insert a collection' },
       { status: 400 },
     )
   } finally {

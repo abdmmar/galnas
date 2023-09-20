@@ -1,19 +1,6 @@
 import Image from 'next/image'
 
-export type Collection = {
-  classification: string
-  artist: {
-    link: string
-    name: string
-  }
-  description: string
-  image?: string
-  link: string
-  medium: string
-  size?: string
-  title: string
-  year: number
-}
+import { Collection } from '@/app/_types/collection'
 
 export type Collections = {
   others: {
