@@ -102,7 +102,7 @@ type FilterType = 'medium' | 'classification'
 
 /**
  * Filter collections.
- * ?classification=paintings,sculpture&medium=1,2,3,4,5,6
+ * ?classification=painting,sculpture&medium=1,2,3,4,5,6
  */
 function SearchFilter() {
   const router = useRouter()
@@ -167,10 +167,10 @@ function SearchFilter() {
         <DropdownMenuLabel>Classification</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
-          checked={classificationFilter.includes('paintings')}
-          onCheckedChange={() => onFilter('classification', 'paintings')}
+          checked={classificationFilter.includes('painting')}
+          onCheckedChange={() => onFilter('classification', 'painting')}
         >
-          Paintings
+          Painting
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={classificationFilter.includes('sculpture')}
