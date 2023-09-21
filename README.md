@@ -46,15 +46,16 @@ erDiagram
     Collection {
       String id PK
       String title
-      String image NULL
+      String image
       String description
-      String link NULL
+      String link
       Int year
-      String classification FK
+      String classification_id FK
     }
 
     Classification {
-      String name PK
+      String id PK
+      String name
     }
 
     Medium {
