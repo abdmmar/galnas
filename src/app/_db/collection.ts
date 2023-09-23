@@ -1,6 +1,49 @@
-import { Client } from "@neondatabase/serverless"
+import { Client } from "@neondatabase/serverless";
 
-import { Collection } from "@/app/_types/collection"
+import { Collection } from "@/app/_types/collection";
+
+async function createMedium(client: Client, data: string | Array<string>): Promise<Array<string> | undefined> {
+  try {
+    const conditions = []
+    const values = []
+
+    if (Array.isArray(data)) {
+      // eslint-disable-next-line unicorn/no-for-loop
+      for (let i = 0; i < data.length; i++) {
+        const item = data[i];
+        conditions.push(`($${i + 1})`)
+        values.push(item)
+      }
+    }
+
+    if (typeof data === 'string') {
+      conditions.push(`($1)`)
+      values.push(data)
+    }
+
+    const valuesClause = conditions.join(', ')
+    const query = `
+    WITH inserted_medium AS (
+      INSERT INTO medium (name) 
+      VALUES ${valuesClause}
+      ON CONFLICT DO NOTHING
+      RETURNING id
+    )
+    SELECT * from inserted_medium
+    UNION
+    SELECT id from medium WHERE name IN ($${conditions.length + 1})
+    `
+    const result = await client.query(
+      query,
+      [...values, values],
+    )
+
+    return result.rows.map(row => row.id) as Array<string>
+  } catch (error) {
+    console.error('[DB] error create medium', error)
+    throw error
+  }
+}
 
 export async function create(client: Client, data: Collection) {
   try {
@@ -26,19 +69,12 @@ export async function create(client: Client, data: Collection) {
     )
     const artistId = artistResult.rows[0].id
 
-    const mediumResult = await client.query(
-      `WITH inserted_medium AS (
-          INSERT INTO medium (name) 
-          VALUES ($1)
-          ON CONFLICT DO NOTHING
-          RETURNING id
-        )
-        SELECT * from inserted_medium
-        UNION
-        SELECT id from medium WHERE name = $1`,
-      [data.medium],
-    )
-    const mediumId = mediumResult.rows[0].id
+    const mediumIds = await createMedium(client, data.medium)
+
+    if (!mediumIds) {
+      throw new Error('[DB] Error insert medium')
+    }
+    console.log('[DB][Medium] Success insert medium')
 
     const collectionResult = await client.query(
       `INSERT INTO collection (title, description, image, year, link, size, classification_id) 
@@ -59,10 +95,13 @@ export async function create(client: Client, data: Collection) {
       collectionId,
       artistId,
     ])
-    await client.query('INSERT INTO collection_medium (collection_id, medium_id) VALUES ($1, $2)', [
-      collectionId,
-      mediumId,
-    ])
+
+    for (const mediumId of mediumIds) {
+      await client.query('INSERT INTO collection_medium (collection_id, medium_id) VALUES ($1, $2)', [
+        collectionId,
+        mediumId,
+      ])
+    }
 
     await client.query('COMMIT')
   } catch (error) {
