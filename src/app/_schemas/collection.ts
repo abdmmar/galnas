@@ -25,7 +25,7 @@ export const collectionSchema = z.object({
     .nonempty({ message: "Year can't be empty" }),
   medium: z
     .string({ required_error: 'Medium is required' })
-    .nonempty({ message: "Medium can't be empty" }),
+    .nonempty({ message: "Medium can't be empty" }).or(z.array(z.string({ required_error: 'Medium is required' }))),
   artist: artistSchema,
   image: z.string().optional(),
   link: z.string().optional(),
