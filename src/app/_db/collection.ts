@@ -11,14 +11,14 @@ export async function create(client: Client, data: Collection) {
           INSERT INTO classification (name) 
           VALUES ($1)
           ON CONFLICT DO NOTHING
-          RETURNING name
+          RETURNING id
         )
         SELECT * from inserted_classification
         UNION
-        SELECT name from classification WHERE name = $1`,
+        SELECT id from classification WHERE name = $1`,
       [data.classification],
     )
-    const classificationName = classificationResult.rows[0].name
+    const classificationId = classificationResult.rows[0].id
 
     const artistResult = await client.query(
       'INSERT INTO artist (name, link) VALUES ($1, $2) RETURNING id',
@@ -41,7 +41,7 @@ export async function create(client: Client, data: Collection) {
     const mediumId = mediumResult.rows[0].id
 
     const collectionResult = await client.query(
-      `INSERT INTO collection (title, description, image, year, link, size, classification) 
+      `INSERT INTO collection (title, description, image, year, link, size, classification_id) 
         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
       [
         data.title,
@@ -50,7 +50,7 @@ export async function create(client: Client, data: Collection) {
         data.year,
         data.link,
         data.size,
-        classificationName,
+        classificationId,
       ],
     )
     const collectionId = collectionResult.rows[0].id
