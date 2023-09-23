@@ -31,7 +31,7 @@ async function createMedium(client: Client, data: string | Array<string>): Promi
     )
     SELECT * from inserted_medium
     UNION
-    SELECT id from medium WHERE name IN ($${conditions.length + 1})
+    SELECT id from medium WHERE name = ANY ($${conditions.length + 1})
     `
     const result = await client.query(
       query,
@@ -71,7 +71,7 @@ export async function create(client: Client, data: Collection) {
 
     const mediumIds = await createMedium(client, data.medium)
 
-    if (!mediumIds) {
+    if (!mediumIds || mediumIds?.length === 0) {
       throw new Error('[DB] Error insert medium')
     }
     console.log('[DB][Medium] Success insert medium')
