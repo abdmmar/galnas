@@ -43,3 +43,33 @@ export async function create(input: Collection) {
     await client.end()
   }
 }
+
+export async function get(input: CollectionDataSource.Params) {
+  const client = new Client(process.env.DATABASE_URL)
+
+  try {
+    await client.connect()
+
+    const result = await CollectionDataSource.get(client, input)
+    const totalRows = result.rowCount
+    const collections = result.rows
+
+    return NextResponse.json({
+      status: 'ok',
+      message: 'successfully get collections',
+      data: { total: totalRows, items: collections },
+    })
+  } catch (error) {
+    console.error('[ERROR][SERVICE_COLLECTION_GET]', error)
+
+    return NextResponse.json(
+      {
+        status: 'error',
+        message: 'failed to get collections',
+      },
+      { status: 400 },
+    )
+  } finally {
+    await client.end()
+  }
+}

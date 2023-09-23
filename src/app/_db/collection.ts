@@ -109,3 +109,84 @@ export async function create(client: Client, data: Collection) {
     throw error
   }
 }
+
+export type Params = {
+  title: string | null;
+  classification: string[] | undefined;
+  medium: string[] | undefined;
+  sort: {
+    field: string;
+    value: string;
+  } | undefined;
+}
+
+export async function get(client: Client, params: Params) {
+  try {
+    let paramQuery = 1
+    const conditions = []
+    const values = []
+
+    if (params.title) {
+      conditions.push(`c.title ILIKE $${paramQuery}`)
+      values.push(`%${params.title}%`)
+      paramQuery++
+    }
+
+    if (params.classification) {
+      conditions.push(`cl.name = ANY ($${paramQuery})`)
+      values.push(params.classification)
+      paramQuery++
+    }
+    if (params.medium) {
+      conditions.push(`m.id = ANY ($${paramQuery})`)
+      values.push(params.medium)
+      paramQuery++
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+    let orderByClause = ''
+
+    if (params.sort) {
+      orderByClause = `ORDER BY $${paramQuery} ${params.sort.value === 'asc' ? 'ASC' : 'DESC'}`
+      values.push(params.sort.field)
+      paramQuery++
+    }
+
+    const query = `
+      SELECT 
+        c.id AS id,
+        c.title as title,
+        c.description as description,
+        c.year as year,
+        c.size as size,
+        cl.name as classification,
+        c.image as image,
+        c.link as link,
+        JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT('id', m.id, 'name', m.name)) AS medium,
+        JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT('id', a.id, 'name', a.name)) AS artist
+      FROM 
+        collection AS c 
+      LEFT JOIN 
+        collection_medium AS cm ON c.id = cm.collection_id 
+      LEFT JOIN 
+        medium AS m ON cm.medium_id = m.id
+      LEFT JOIN
+        collection_artist AS ca ON c.id = ca.collection_id
+      LEFT JOIN
+        artist AS a ON ca.artist_id = a.id
+      LEFT JOIN
+        classification AS cl ON c.classification_id = cl.id
+      ${whereClause}
+      GROUP BY 
+        c.id, cl.name
+      ${orderByClause}
+    `
+
+    const result = await client.query<Collection>(query, values)
+
+    return result
+  } catch (error) {
+    console.error('[ERROR][DB_COLLECTION_GET]', error)
+    throw error
+  }
+}
