@@ -69,15 +69,15 @@ export async function GET(request: Request) {
       JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT('id', a.id, 'name', a.name)) AS artist
     FROM 
       collection AS c 
-    JOIN 
+    LEFT JOIN 
       collection_medium AS cm ON c.id = cm.collection_id 
-    JOIN 
+    LEFT JOIN 
       medium AS m ON cm.medium_id = m.id
-    JOIN
+    LEFT JOIN
       collection_artist AS ca ON c.id = ca.collection_id
-    JOIN
+    LEFT JOIN
       artist AS a ON ca.artist_id = a.id
-    JOIN
+    LEFT JOIN
       classification AS cl ON c.classification_id = cl.id
     ${whereClause}
     GROUP BY 
