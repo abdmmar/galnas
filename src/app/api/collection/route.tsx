@@ -8,12 +8,12 @@ export async function GET(request: Request) {
   const url = new URL(request.url)
   const sortParams = url.searchParams.get('sort')
   const sortValue = sortParams ? sortParams.split(':') : undefined
-  const classificationParams = url.searchParams.get('classification')
-  const mediumParams = url.searchParams.get('medium')
+  const classificationParams = url.searchParams.get('classification')?.split(',')
+  const mediumParams = url.searchParams.get('medium')?.split(',')
   const params = {
     title: url.searchParams.get('title'),
-    classification: classificationParams?.split(','),
-    medium: mediumParams?.split(','),
+    classification: classificationParams,
+    medium: mediumParams,
     sort: sortValue && {
       field: sortValue[0],
       value: sortValue[1],
@@ -36,13 +36,12 @@ export async function GET(request: Request) {
     }
 
     if (params.classification) {
-      conditions.push(`cl.name IN ($${paramQuery})`)
+      conditions.push(`cl.name = ANY ($${paramQuery})`)
       values.push(classificationParams)
       paramQuery++
     }
-
     if (params.medium) {
-      conditions.push(`m.id IN ($${paramQuery})`)
+      conditions.push(`m.id = ANY ($${paramQuery})`)
       values.push(mediumParams)
       paramQuery++
     }
@@ -66,8 +65,8 @@ export async function GET(request: Request) {
       cl.name as classification,
       c.image as image,
       c.link as link,
-      JSONB_AGG(JSONB_BUILD_OBJECT('id', m.id, 'name', m.name)) AS medium,
-      JSONB_AGG(JSONB_BUILD_OBJECT('id', a.id, 'name', a.name)) AS artist
+      JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT('id', m.id, 'name', m.name)) AS medium,
+      JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT('id', a.id, 'name', a.name)) AS artist
     FROM 
       collection AS c 
     JOIN 
