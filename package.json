@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "init:db": "ts-node -r dotenv/config --project tsconfig.node.json ./src/app/_db/config.ts"
+    "init:db": "ts-node -r dotenv/config --project tsconfig.node.json ./src/app/_db/init.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "0.6.0",

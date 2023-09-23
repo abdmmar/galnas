@@ -27,6 +27,8 @@ async function seed() {
   const client = new Client(process.env.DATABASE_URL)
 
   try {
+    await client.connect()
+
     for (const collection of collections) {
       await CollectionDataSource.create(client, collection)
     }
