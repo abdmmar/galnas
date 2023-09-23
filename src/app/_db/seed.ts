@@ -1,11 +1,13 @@
-import { Client } from '@neondatabase/serverless';
-
-import * as CollectionDataSource from '@/app/_db/collection';
-import { Collection as CollectionType } from '@/app/_types/collection';
+import { Client, neonConfig } from '@neondatabase/serverless';
+import ws from 'ws';
 
 import galnas from '../../data/galeri-nasional.json';
+import { Collection as CollectionType } from '../_types/collection';
+import * as CollectionDataSource from './collection';
 
 async function seed() {
+  neonConfig.webSocketConstructor = ws
+
   const collections: Array<CollectionType> = [
     ...galnas.paintings.data.map((item) => ({
       ...item,
@@ -24,7 +26,8 @@ async function seed() {
     })),
   ]
 
-  const client = new Client(process.env.DATABASE_URL)
+  const databaseURL = `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}/${process.env.PGDATABASE}`
+  const client = new Client(databaseURL)
 
   try {
     await client.connect()
