@@ -36,7 +36,7 @@ export async function GET(request: Request) {
     }
 
     if (params.classification) {
-      conditions.push(`c.classification IN ($${paramQuery})`)
+      conditions.push(`cl.name IN ($${paramQuery})`)
       values.push(classificationParams)
       paramQuery++
     }
@@ -63,7 +63,7 @@ export async function GET(request: Request) {
       c.description as description,
       c.year as year,
       c.size as size,
-      c.classification as classification,
+      cl.name as classification,
       c.image as image,
       c.link as link,
       JSONB_AGG(JSONB_BUILD_OBJECT('id', m.id, 'name', m.name)) AS medium,
@@ -78,9 +78,11 @@ export async function GET(request: Request) {
       collection_artist AS ca ON c.id = ca.collection_id
     JOIN
       artist AS a ON ca.artist_id = a.id
+    JOIN
+      classification AS cl ON c.classification_id = cl.id
     ${whereClause}
     GROUP BY 
-      c.id
+      c.id, cl.name
     ${orderByClause}
     `
 
