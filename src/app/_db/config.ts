@@ -29,7 +29,7 @@ async function initTable() {
             id SERIAL PRIMARY KEY,
             title TEXT,
             description TEXT,
-            year INTEGER,
+            year TEXT,
             image TEXT NULL,
             link TEXT NULL,
             size TEXT NULL,
