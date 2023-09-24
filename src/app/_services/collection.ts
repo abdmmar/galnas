@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import * as CollectionDataSource from '@/app/_db/collection'
 import { collectionSchema } from "@/app/_schemas/collection"
 import { Collection } from "@/app/_types/collection"
+import { Response } from "@/app/_types/common"
 import { flattenErrors } from "@/lib/utils"
 
 export async function create(input: Collection) {
@@ -44,9 +45,7 @@ export async function create(input: Collection) {
   }
 }
 
-type SuccessResponse = { status: 'ok', message: string, data: { total: number, items: Array<Collection> } }
-type ErrorResponse = { status: 'error', message: string }
-export type GetResponse = SuccessResponse | ErrorResponse
+export type GetResponse = Response<{ total: number, items: Array<Collection> }>
 
 export async function get(input: CollectionDataSource.Params): Promise<NextResponse<GetResponse>> {
   const client = new Client(process.env.DATABASE_URL)
@@ -58,7 +57,7 @@ export async function get(input: CollectionDataSource.Params): Promise<NextRespo
     const totalRows = result.rowCount
     const collections = result.rows
 
-    return NextResponse.json<SuccessResponse>({
+    return NextResponse.json({
       status: 'ok',
       message: 'successfully get collections',
       data: { total: totalRows, items: collections },

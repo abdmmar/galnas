@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   const sortParams = url.searchParams.get('sort')
   const sortValue = sortParams ? sortParams.split(':') : undefined
   const params = {
-    title: url.searchParams.get('title'),
+    title: url.searchParams.get('title') || undefined,
     classification: url.searchParams.get('classification')?.split(','),
     medium: url.searchParams.get('medium')?.split(','),
     sort: sortValue && {
