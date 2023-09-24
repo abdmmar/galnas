@@ -16,7 +16,7 @@ export async function get(): Promise<NextResponse<GetResponse>> {
       data: result,
     })
   } catch (error) {
-    console.error('[ERROR][SERVICE_COLLECTION_GET]', error)
+    console.error('[ERROR][SERVICE_MEDIUM_GET]', error)
 
     return NextResponse.json(
       {
