@@ -111,13 +111,13 @@ export async function create(client: Client, data: Collection) {
 }
 
 export type Params = {
-  title: string | null;
-  classification: string[] | undefined;
-  medium: string[] | undefined;
-  sort: {
+  title?: string;
+  classification?: string[];
+  medium?: string[];
+  sort?: {
     field: string;
     value: string;
-  } | undefined;
+  }
 }
 
 export async function get(client: Client, params: Params) {

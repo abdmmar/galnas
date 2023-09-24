@@ -44,7 +44,11 @@ export async function create(input: Collection) {
   }
 }
 
-export async function get(input: CollectionDataSource.Params) {
+type SuccessResponse = { status: 'ok', message: string, data: { total: number, items: Array<Collection> } }
+type ErrorResponse = { status: 'error', message: string }
+export type GetResponse = SuccessResponse | ErrorResponse
+
+export async function get(input: CollectionDataSource.Params): Promise<NextResponse<GetResponse>> {
   const client = new Client(process.env.DATABASE_URL)
 
   try {
@@ -54,7 +58,7 @@ export async function get(input: CollectionDataSource.Params) {
     const totalRows = result.rowCount
     const collections = result.rows
 
-    return NextResponse.json({
+    return NextResponse.json<SuccessResponse>({
       status: 'ok',
       message: 'successfully get collections',
       data: { total: totalRows, items: collections },
