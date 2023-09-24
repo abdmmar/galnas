@@ -147,9 +147,9 @@ export async function get(client: Client, params: Params) {
     let orderByClause = ''
 
     if (params.sort) {
-      orderByClause = `ORDER BY $${paramQuery} ${params.sort.value === 'asc' ? 'ASC' : 'DESC'}`
-      values.push(params.sort.field)
-      paramQuery++
+      const orderBy = ['title', 'year'].includes(params.sort.field) ? params.sort.field : "id"
+      const order = ['ASC', 'DESC'].includes(params.sort.value.toUpperCase()) ? params.sort.value : 'ASC'
+      orderByClause = `ORDER BY ${orderBy} ${order}`
     }
 
     const query = `
@@ -181,6 +181,8 @@ export async function get(client: Client, params: Params) {
         c.id, cl.name
       ${orderByClause}
     `
+    console.log("🚀 ~ file: collection.ts:184 ~ query:", query)
+    console.log("🚀 ~ file: collection.ts:187 ~ values:", values)
 
     const result = await client.query<Collection>(query, values)
 
