@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import * as React from 'react'
 
 import { ResetButton } from '@/app/_components/reset-button'
+import { Classification } from '@/app/_schemas/classification'
 import { Medium } from '@/app/_schemas/medium'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,7 +24,13 @@ type FilterType = 'medium' | 'classification'
  * Filter collections.
  * ?classification=painting,sculpture&medium=1,2,3,4,5,6
  */
-export function SearchFilter({ mediums }: { mediums: Array<Medium> }) {
+export function SearchFilter({
+  mediums,
+  classifications,
+}: {
+  mediums: Array<Medium>
+  classifications: Array<Classification>
+}) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -85,24 +92,15 @@ export function SearchFilter({ mediums }: { mediums: Array<Medium> }) {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Classification</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={classificationFilter.includes('painting')}
-          onCheckedChange={() => onFilter('classification', 'painting')}
-        >
-          Painting
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={classificationFilter.includes('sculpture')}
-          onCheckedChange={() => onFilter('classification', 'sculpture')}
-        >
-          Sculpture
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={classificationFilter.includes('other')}
-          onCheckedChange={() => onFilter('classification', 'other')}
-        >
-          Other
-        </DropdownMenuCheckboxItem>
+        {classifications.map((classification) => (
+          <DropdownMenuCheckboxItem
+            key={classification.id}
+            checked={classificationFilter.includes(classification.name)}
+            onCheckedChange={() => onFilter('classification', classification.name)}
+          >
+            {classification.name}
+          </DropdownMenuCheckboxItem>
+        ))}
         <DropdownMenuLabel>Medium</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {mediums.map((medium) => (
