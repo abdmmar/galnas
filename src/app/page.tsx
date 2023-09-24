@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import * as React from 'react'
 
 import { Collection } from '@/app/_components/collection'
 import { Search } from '@/app/_components/search'
@@ -19,16 +20,22 @@ const createColumns = (data: Array<CollectionType>) => {
   return columns
 }
 
+type SearchParams = { title?: string; classification?: string; medium?: string; sort?: string }
 type Props = {
-  searchParams: { title?: string; classification?: string; medium?: string; sort?: string }
+  searchParams: SearchParams
 }
 
+const getCollections = React.cache(
+  async (searchParams: SearchParams) =>
+    await CollectionService.get({
+      title: searchParams.title,
+      classification: searchParams.classification?.split(','),
+      medium: searchParams.medium?.split(','),
+    }),
+)
+
 export default async function Home({ searchParams }: Props) {
-  const result = await CollectionService.get({
-    title: searchParams.title,
-    classification: searchParams.classification?.split(','),
-    medium: searchParams.medium?.split(','),
-  })
+  const result = await getCollections(searchParams)
   const response = (await result.json()) as CollectionService.GetResponse
 
   if (response.status === 'error') {
