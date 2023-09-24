@@ -33,6 +33,7 @@ export function SearchTitle() {
 
     router.push(pathname + '?' + createQueryString('title', value))
   }
+
   return (
     <div className="relative">
       <Input

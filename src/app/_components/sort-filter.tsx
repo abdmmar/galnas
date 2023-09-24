@@ -1,6 +1,7 @@
 'use client'
 
 import { AnimatePresence } from 'framer-motion'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import * as React from 'react'
 
 import { ResetButton } from '@/app/_components/reset-button'
@@ -16,19 +17,42 @@ import {
 type Sort = '' | 'title:asc' | 'title:desc' | 'year:asc' | 'year:desc'
 
 export function SortFilter() {
-  const [sort, setSort] = React.useState<Sort>('')
-  const isSorted = sort !== ''
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  const onSort = (s: Sort) => setSort(s)
+  const sort = searchParams.get('sort') || ''
+  const isSorted = Boolean(sort)
+
+  const createQueryString = React.useCallback(
+    (name: string, value: string) => {
+      const parameters = new URLSearchParams(searchParams)
+      parameters.set(name, value)
+
+      return parameters.toString()
+    },
+    [searchParams],
+  )
+
+  const onChange = (value: Sort) => {
+    if (!value) {
+      const params = new URLSearchParams(searchParams)
+      params.delete('sort')
+      router.push(pathname + '?' + params.toString())
+      return
+    }
+
+    router.push(pathname + '?' + createQueryString('sort', value))
+  }
 
   return (
-    <Select onValueChange={(v) => onSort(v as Sort)} value={sort}>
+    <Select onValueChange={onChange} value={sort}>
       <div className="relative">
         <SelectTrigger className="w-[150px]">
           <SelectValue placeholder="Urutkan" />
         </SelectTrigger>
         <AnimatePresence>
-          {isSorted && <ResetButton onClick={() => onSort('')} tooltip="Reset Urutkan" />}
+          {isSorted && <ResetButton onClick={() => onChange('')} tooltip="Reset Urutkan" />}
         </AnimatePresence>
       </div>
       <SelectContent>

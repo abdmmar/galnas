@@ -25,14 +25,20 @@ type Props = {
   searchParams: SearchParams
 }
 
-const getCollections = React.cache(
-  async (searchParams: SearchParams) =>
-    await CollectionService.get({
-      title: searchParams.title,
-      classification: searchParams.classification?.split(','),
-      medium: searchParams.medium?.split(','),
-    }),
-)
+const getCollections = React.cache(async (searchParams: SearchParams) => {
+  const sortParams = searchParams.sort
+  const sortValue = sortParams ? sortParams.split(':') : undefined
+
+  return await CollectionService.get({
+    title: searchParams.title,
+    classification: searchParams.classification?.split(','),
+    medium: searchParams.medium?.split(','),
+    sort: sortValue && {
+      field: sortValue[0],
+      value: sortValue[1],
+    },
+  })
+})
 
 export default async function Home({ searchParams }: Props) {
   const result = await getCollections(searchParams)
