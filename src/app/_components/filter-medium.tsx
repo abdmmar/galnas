@@ -10,6 +10,7 @@ import { Medium } from '@/app/_schemas/medium'
 import { Button } from '@/components/ui/button'
 import { Command, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
@@ -90,27 +91,34 @@ export function FilterMedium({ mediums }: { mediums: Array<Medium> }) {
           {isFiltered && <ResetButton onClick={resetFilter} tooltip="Reset Filter" />}
         </AnimatePresence>
       </div>
-      <PopoverContent className="w-56 p-1">
+      <PopoverContent className="w-56 p-0">
         <Command loop>
-          <CommandInput ref={inputRef} value={inputValue} onValueChange={setInputValue} />
-          <CommandGroup>
-            {mediums.map((medium) => {
-              const isActive = mediumFilter.includes(medium.id.toString())
+          <CommandInput
+            ref={inputRef}
+            placeholder="Cari medium"
+            value={inputValue}
+            onValueChange={setInputValue}
+          />
+          <ScrollArea className="h-[300px]">
+            <CommandGroup>
+              {mediums.map((medium) => {
+                const isActive = mediumFilter.includes(medium.id.toString())
 
-              return (
-                <CommandItem
-                  key={medium.id}
-                  value={medium.id}
-                  onSelect={() => onFilter('medium', medium.id.toString())}
-                >
-                  <CheckIcon
-                    className={cn('mr-2 h-4 w-4', isActive ? 'opacity-100' : 'opacity-0')}
-                  />
-                  <div className="flex-1">{medium.name}</div>
-                </CommandItem>
-              )
-            })}
-          </CommandGroup>
+                return (
+                  <CommandItem
+                    key={medium.id}
+                    value={medium.id}
+                    onSelect={() => onFilter('medium', medium.id.toString())}
+                  >
+                    <CheckIcon
+                      className={cn('mr-2 h-4 w-4', isActive ? 'opacity-100' : 'opacity-0')}
+                    />
+                    <div className="flex-1">{medium.name}</div>
+                  </CommandItem>
+                )
+              })}
+            </CommandGroup>
+          </ScrollArea>
         </Command>
       </PopoverContent>
     </Popover>
