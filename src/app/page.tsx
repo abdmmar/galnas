@@ -52,7 +52,7 @@ export default async function Home({ searchParams }: Props) {
   const columns = createColumns(collections)
 
   return (
-    <div className="flex min-h-screen w-full gap-10 bg-background">
+    <div className="flex min-h-screen w-full gap-10 bg-background p-4">
       <div className="flex w-1/4">
         <Collection data={columns[0]} />
       </div>
