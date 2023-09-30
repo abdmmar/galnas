@@ -7,7 +7,6 @@ import * as React from 'react'
 
 import { ResetButton } from '@/app/_components/reset-button'
 import { Classification } from '@/app/_schemas/classification'
-import { Medium } from '@/app/_schemas/medium'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -17,18 +16,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
-type FilterType = 'medium' | 'classification'
+type FilterType = 'classification'
 
 /**
  * Filter collections.
- * ?classification=painting,sculpture&medium=1,2,3,4,5,6
+ * ?classification=painting,sculpture
  */
-export function SearchFilter({
-  mediums,
+export function FilterClassification({
   classifications,
 }: {
-  mediums: Array<Medium>
   classifications: Array<Classification>
 }) {
   const router = useRouter()
@@ -36,8 +34,7 @@ export function SearchFilter({
   const searchParams = useSearchParams()
 
   const classificationFilter = searchParams.get('classification')?.split(',') || []
-  const mediumFilter = searchParams.get('medium')?.split(',') || []
-  const isFiltered = classificationFilter.length > 0 || mediumFilter.length > 0
+  const isFiltered = classificationFilter.length > 0
 
   const createQueryString = React.useCallback(
     (name: string, value: string) => {
@@ -69,7 +66,6 @@ export function SearchFilter({
   const resetFilter = () => {
     const params = new URLSearchParams(searchParams)
     params.delete('classification')
-    params.delete('medium')
     router.push(pathname + '?' + params.toString())
   }
 
@@ -80,11 +76,20 @@ export function SearchFilter({
   return (
     <DropdownMenu>
       <div className="relative">
-        <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="outline">
-            <MixerVerticalIcon className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <Button size="icon" variant="outline" aria-label="Filter classification">
+                  <MixerVerticalIcon className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent className="px-1 py-1" sideOffset={0}>
+              <span>Filter Classification</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <AnimatePresence>
           {isFiltered && <ResetButton onClick={resetFilter} tooltip="Reset Filter" />}
         </AnimatePresence>
@@ -99,17 +104,6 @@ export function SearchFilter({
             onCheckedChange={() => onFilter('classification', classification.name)}
           >
             {classification.name}
-          </DropdownMenuCheckboxItem>
-        ))}
-        <DropdownMenuLabel>Medium</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {mediums.map((medium) => (
-          <DropdownMenuCheckboxItem
-            key={medium.id}
-            checked={mediumFilter.includes(medium.id.toString())}
-            onCheckedChange={() => onFilter('medium', medium.id.toString())}
-          >
-            {medium.name}
           </DropdownMenuCheckboxItem>
         ))}
       </DropdownMenuContent>
