@@ -2,6 +2,7 @@ import { Client } from "@neondatabase/serverless"
 import { NextResponse } from "next/server"
 
 import * as CollectionDataSource from '@/app/_db/collection'
+import { DATABASE_URL } from "@/app/_db/config"
 import { collectionSchema } from "@/app/_schemas/collection"
 import { Collection } from "@/app/_types/collection"
 import { Response } from "@/app/_types/common"
@@ -21,7 +22,7 @@ export async function create(input: Collection) {
     )
   }
 
-  const client = new Client(process.env.DATABASE_URL)
+  const client = new Client(DATABASE_URL)
 
   try {
     await client.connect()
@@ -48,7 +49,7 @@ export async function create(input: Collection) {
 export type GetResponse = Response<{ total: number, items: Array<Collection> }>
 
 export async function get(input: CollectionDataSource.Params): Promise<NextResponse<GetResponse>> {
-  const client = new Client(process.env.DATABASE_URL)
+  const client = new Client(DATABASE_URL)
 
   try {
     await client.connect()
