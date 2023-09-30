@@ -72,11 +72,11 @@ export function CollectionCard({ collection }: { collection: CollectionType }) {
       >
         <motion.p
           animate={controls}
-          className="font-medium"
+          className="font-medium text-white"
           transition={{ opacity: { ease: 'easeInOut', duration: 0.15 } }}
           variants={{
-            initial: { visibility: 'hidden', y: 10, opacity: 0, color: 'white' },
-            hover: { visibility: 'visible', y: 0, opacity: 1, color: 'white' },
+            initial: { visibility: 'hidden', y: 10, opacity: 0 },
+            hover: { visibility: 'visible', y: 0, opacity: 1 },
           }}
         >
           {collection.title}
