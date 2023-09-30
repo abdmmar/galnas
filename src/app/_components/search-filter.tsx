@@ -106,8 +106,8 @@ export function SearchFilter({
         {mediums.map((medium) => (
           <DropdownMenuCheckboxItem
             key={medium.id}
-            checked={mediumFilter.includes(medium.id)}
-            onCheckedChange={() => onFilter('medium', medium.id)}
+            checked={mediumFilter.includes(medium.id.toString())}
+            onCheckedChange={() => onFilter('medium', medium.id.toString())}
           >
             {medium.name}
           </DropdownMenuCheckboxItem>

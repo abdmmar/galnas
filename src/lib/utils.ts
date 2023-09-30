@@ -36,3 +36,13 @@ export function flattenErrors<T>(errors: z.ZodFormattedError<T>) {
 
   return result
 }
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function debounce<T extends Function>(cb: T, wait = 20) {
+  let h: NodeJS.Timeout | number = 0;
+  const callable = (...args: Array<unknown>) => {
+    clearTimeout(h);
+    h = setTimeout(() => cb(...args), wait);
+  };
+  return <T>(<unknown>callable);
+}

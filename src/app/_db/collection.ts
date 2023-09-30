@@ -152,6 +152,8 @@ export async function get(client: Client, params: Params) {
       orderByClause = `ORDER BY ${orderBy} ${order}`
     }
 
+    console.time('collection')
+
     const query = `
       SELECT 
         c.id AS id,
@@ -181,10 +183,10 @@ export async function get(client: Client, params: Params) {
         c.id, cl.name
       ${orderByClause}
     `
-    console.log("🚀 ~ file: collection.ts:184 ~ query:", query)
-    console.log("🚀 ~ file: collection.ts:187 ~ values:", values)
 
     const result = await client.query<Collection>(query, values)
+
+    console.timeEnd('collection')
 
     return result
   } catch (error) {
