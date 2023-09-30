@@ -18,6 +18,8 @@ type FilterType = 'medium'
 /**
  * Filter collections.
  * ?medium=1,2,3,4,5,6
+ *
+ * @source https://craft.mxkaske.dev/post/fancy-box
  */
 export function FilterMedium({ mediums }: { mediums: Array<Medium> }) {
   const router = useRouter()
