@@ -10,7 +10,6 @@ export function CollectionCard({ collection }: { collection: CollectionType }) {
   const controls = useAnimation()
 
   function onMouseEnter() {
-    console.log('hover')
     controls.start('hover')
   }
 
@@ -55,7 +54,7 @@ export function CollectionCard({ collection }: { collection: CollectionType }) {
       )}
       <motion.div
         animate={controls}
-        transition={{ opacity: { ease: 'linear' } }}
+        transition={{ opacity: { ease: 'easeInOut' } }}
         initial="initial"
         variants={{
           initial: {
@@ -74,6 +73,7 @@ export function CollectionCard({ collection }: { collection: CollectionType }) {
         <motion.p
           animate={controls}
           className="font-medium"
+          transition={{ opacity: { ease: 'easeInOut', duration: 0.15 } }}
           variants={{
             initial: { visibility: 'hidden', y: 10, opacity: 0, color: 'white' },
             hover: { visibility: 'visible', y: 0, opacity: 1, color: 'white' },
