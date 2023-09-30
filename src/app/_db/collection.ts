@@ -134,7 +134,7 @@ export async function get(client: Client, params: Params) {
 
     if (params.classification) {
       conditions.push(`cl.name = ANY ($${paramQuery})`)
-      values.push(params.classification)
+      values.push(params.classification.map(c => c.toLowerCase()))
       paramQuery++
     }
     if (params.medium) {

@@ -4,7 +4,8 @@ import { Medium } from "@/app/_schemas/medium";
 export async function get() {
   try {
     const result = await sql`
-      SELECT * FROM medium
+      SELECT id, INITCAP(name) as name FROM medium
+      ORDER BY name
     `
     return result as Array<Medium>
   } catch (error) {

@@ -4,7 +4,7 @@ import { Classification } from "@/app/_schemas/classification";
 export async function get() {
   try {
     const result = await sql`
-      SELECT * FROM classification
+      SELECT id, INITCAP(name) as name FROM classification
     `
     return result as Array<Classification>
   } catch (error) {
