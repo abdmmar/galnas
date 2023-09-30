@@ -29,7 +29,7 @@
     "unicorn"
   ],
   "rules": {
-    "simple-import-sort/imports": 2,
+    "simple-import-sort/imports": 0,
     "simple-import-sort/exports": 2,
     "import/first": 2,
     "import/newline-after-import": 2,
