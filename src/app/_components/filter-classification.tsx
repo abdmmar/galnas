@@ -81,7 +81,7 @@ export function FilterClassification({
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
                 <Button size="icon" variant="outline" aria-label="Filter classification">
-                  <MixerVerticalIcon className="h-4 w-4" />
+                  <MixerVerticalIcon className="h-4 w-4 text-secondary-foreground" />
                 </Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>

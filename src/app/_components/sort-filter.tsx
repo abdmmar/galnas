@@ -11,7 +11,6 @@ import {
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from '@/components/ui/select'
 
 type Sort = '' | 'title:asc' | 'title:desc' | 'year:asc' | 'year:desc'
@@ -48,9 +47,7 @@ export function SortFilter() {
   return (
     <Select onValueChange={onChange} value={sort}>
       <div className="relative">
-        <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Urutkan" />
-        </SelectTrigger>
+        <SelectTrigger></SelectTrigger>
         <AnimatePresence>
           {isSorted && <ResetButton onClick={() => onChange('')} tooltip="Reset Urutkan" />}
         </AnimatePresence>

@@ -41,7 +41,7 @@ export function SearchTitle() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Input className="pr-8" onChange={onChange} placeholder="Cari koleksi" value={s} />
       <div className="absolute inset-y-0 right-0 flex items-center p-2">
         <MagnifyingGlassIcon className="h-4 w-4 text-secondary-foreground" />

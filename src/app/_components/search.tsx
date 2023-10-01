@@ -10,7 +10,7 @@ export async function Search() {
   const mediums = await MediumDataSource.get()
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex w-full items-center gap-3 md:w-fit">
       <FilterClassification classifications={classifications} />
       <FilterMedium mediums={mediums} />
       <SortFilter />

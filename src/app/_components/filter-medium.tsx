@@ -78,7 +78,7 @@ export function FilterMedium({ mediums }: { mediums: Array<Medium> }) {
             <TooltipTrigger asChild>
               <PopoverTrigger asChild>
                 <Button size="icon" variant="outline" aria-label="Filter medium">
-                  <ComponentInstanceIcon className="h-4 w-4" />
+                  <ComponentInstanceIcon className="h-4 w-4 text-secondary-foreground" />
                 </Button>
               </PopoverTrigger>
             </TooltipTrigger>
