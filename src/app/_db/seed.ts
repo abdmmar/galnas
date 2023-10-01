@@ -8,7 +8,7 @@ import * as CollectionDataSource from './collection';
 async function seed() {
   neonConfig.webSocketConstructor = ws
 
-  const collections: Array<CollectionType> = [
+  const collections: Array<Omit<CollectionType, "id">> = [
     ...galnas.paintings.data.map((item) => ({
       ...item,
       classification: 'painting',
