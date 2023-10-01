@@ -77,3 +77,28 @@ export async function get(input: CollectionDataSource.Params): Promise<NextRespo
     await client.end()
   }
 }
+export type GetByIdResponse = Response<Collection>
+
+export async function getById(id: string): Promise<NextResponse<GetByIdResponse>> {
+  try {
+    const result = await CollectionDataSource.getById(id)
+
+    const collection = result[0]
+
+    return NextResponse.json({
+      status: 'ok',
+      message: 'successfully get collection',
+      data: collection,
+    })
+  } catch (error) {
+    console.error('[ERROR][GET_BY_ID][COLLECTION]', error)
+
+    return NextResponse.json(
+      {
+        status: 'error',
+        message: 'failed to get collection',
+      },
+      { status: 400 },
+    )
+  }
+}

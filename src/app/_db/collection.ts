@@ -1,5 +1,6 @@
 import { Client } from "@neondatabase/serverless";
 
+import { sql } from "@/app/_db/config";
 import { Collection } from "@/app/_types/collection";
 
 async function createMedium(client: Client, data: string | Array<string>): Promise<Array<string> | undefined> {
@@ -152,8 +153,6 @@ export async function get(client: Client, params: Params) {
       orderByClause = `ORDER BY ${orderBy} ${order}`
     }
 
-    console.time('collection')
-
     const query = `
       SELECT 
         c.id AS id,
@@ -186,11 +185,48 @@ export async function get(client: Client, params: Params) {
 
     const result = await client.query<Collection>(query, values)
 
-    console.timeEnd('collection')
-
     return result
   } catch (error) {
     console.error('[ERROR][DB_COLLECTION_GET]', error)
+    throw error
+  }
+}
+
+export async function getById(id: string) {
+  try {
+    const result = await sql`
+      SELECT 
+        c.id AS id,
+        c.title as title,
+        c.description as description,
+        c.year as year,
+        c.size as size,
+        INITCAP(cl.name) as classification,
+        c.image as image,
+        c.link as link,
+        JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT('id', m.id, 'name', INITCAP(m.name))) AS medium,
+        JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT('id', a.id, 'name', a.name)) AS artist
+      FROM 
+        collection AS c 
+      JOIN 
+        collection_medium AS cm ON c.id = cm.collection_id 
+      JOIN 
+        medium AS m ON cm.medium_id = m.id
+      JOIN
+        collection_artist AS ca ON c.id = ca.collection_id
+      JOIN
+        artist AS a ON ca.artist_id = a.id
+      JOIN
+        classification AS cl ON c.classification_id = cl.id
+      WHERE
+        c.id = ${id}
+      GROUP BY
+        c.id, cl.name
+    `
+
+    return result as Array<Collection>
+  } catch (error) {
+    console.error('[ERROR][DB_COLLECTION_GET_BY_ID]', error)
     throw error
   }
 }
