@@ -29,15 +29,20 @@ export default function Loading() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 sm:gap-10 md:grid-cols-2 lg:grid-cols-4">
         <div className="lg:-mt-[485px] xl:-mt-[540px]">
-          <div className="h-[250px] w-full bg-zinc-300" />
-          <div className="h-[250px] w-full bg-zinc-300" />
-          <div className="h-[250px] w-full bg-zinc-300" />
+          <div className="flex w-full flex-col gap-10">
+            <div className="h-[250px] w-full bg-zinc-300" />
+            <div className="h-[250px] w-full bg-zinc-300" />
+            <div className="h-[250px] w-full bg-zinc-300" />
+          </div>
         </div>
         <div className="h-[250px] w-full bg-zinc-300" />
         <div className="h-[250px] w-full bg-zinc-300" />
         <div className="lg:-mt-[485px] xl:-mt-[540px]">
-          <div className="h-[250px] w-full bg-zinc-300" />
-          <div className="h-[250px] w-full bg-zinc-300" />
+          <div className="flex w-full flex-col gap-10">
+            <div className="h-[250px] w-full bg-zinc-300" />
+            <div className="h-[250px] w-full bg-zinc-300" />
+            <div className="h-[250px] w-full bg-zinc-300" />
+          </div>
         </div>
       </div>
     </div>

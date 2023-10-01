@@ -46,7 +46,7 @@ async function createMedium(client: Client, data: string | Array<string>): Promi
   }
 }
 
-export async function create(client: Client, data: Collection) {
+export async function create(client: Client, data: Omit<Collection, "id">) {
   try {
     await client.query('BEGIN')
 

@@ -11,7 +11,13 @@ export const metadata: Metadata = {
   title: 'Galeri Nasional Indonesia - Unofficial',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode
+  modal: React.ReactNode
+}) {
   return (
     <html className="overflow-y-scroll" lang="en">
       <body
@@ -20,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           marginRight: '0 !important',
         }}
       >
+        {modal}
         {children}
       </body>
     </html>
