@@ -29,6 +29,7 @@ export function FilterMedium({ mediums }: { mediums: Array<Medium> }) {
 
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [inputValue, setInputValue] = React.useState<string>('')
+  const [open, close] = React.useReducer((s) => !s, false)
 
   const mediumFilter = searchParams.get('medium')?.split(',') || []
   const isFiltered = mediumFilter.length > 0
@@ -68,10 +69,11 @@ export function FilterMedium({ mediums }: { mediums: Array<Medium> }) {
 
   const onFilter = (type: FilterType, value: string) => {
     router.push(pathname + '?' + createQueryString(type, value))
+    close()
   }
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={close}>
       <div className="relative">
         <TooltipProvider>
           <Tooltip>
