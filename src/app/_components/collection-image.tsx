@@ -6,7 +6,13 @@ import { ImageIcon } from '@radix-ui/react-icons'
 import { motion, useAnimation } from 'framer-motion'
 import Image from 'next/image'
 
-export function CollectionCard({ collection }: { collection: CollectionType }) {
+export function CollectionCard({
+  collection,
+  priority,
+}: {
+  collection: CollectionType
+  priority?: boolean
+}) {
   const controls = useAnimation()
 
   function onMouseEnter() {
@@ -35,6 +41,7 @@ export function CollectionCard({ collection }: { collection: CollectionType }) {
         <Image
           title={collection.title}
           alt={`${collection.title} thumbnail`}
+          loading={priority ? 'eager' : 'lazy'}
           height={300}
           sizes="100vw"
           src={'/images/webp/' + collection.image.replaceAll(/(\.(jpe?g|png)$)/gi, '.webp')}
