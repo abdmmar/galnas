@@ -34,10 +34,10 @@ export function CollectionCard({ collection }: { collection: CollectionType }) {
       {collection.image ? (
         <Image
           title={collection.title}
-          alt={collection.title}
+          alt={`${collection.title} thumbnail`}
           height={300}
           sizes="100vw"
-          src={'/images/' + collection.image}
+          src={'/images/webp/' + collection.image.replaceAll(/(\.(jpe?g|png)$)/gi, '.webp')}
           style={{
             height: 'auto',
             width: '100%',

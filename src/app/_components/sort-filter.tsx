@@ -47,7 +47,9 @@ export function SortFilter() {
   return (
     <Select onValueChange={onChange} value={sort}>
       <div className="relative">
-        <SelectTrigger></SelectTrigger>
+        <SelectTrigger>
+          <span className="sr-only">Sort filter</span>
+        </SelectTrigger>
         <AnimatePresence>
           {isSorted && <ResetButton onClick={() => onChange('')} tooltip="Reset Urutkan" />}
         </AnimatePresence>
