@@ -3,12 +3,12 @@
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { useRouter } from 'next/navigation'
 
-export function Modal({ children }: { children?: React.ReactNode }) {
+export function Modal({ children, className }: { children?: React.ReactNode; className?: string }) {
   const router = useRouter()
 
   return (
     <Dialog open onOpenChange={() => router.back()}>
-      <DialogContent>{children}</DialogContent>
+      <DialogContent className={className}>{children}</DialogContent>
     </Dialog>
   )
 }
