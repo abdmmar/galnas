@@ -5,7 +5,36 @@ import { Search } from '@/app/_components/search'
 import * as CollectionService from '@/app/_services/collection'
 import { Collection as CollectionType } from '@/app/_types/collection'
 import { ArrowRightIcon } from '@radix-ui/react-icons'
+import { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Galeri Nasional Indonesia - Unofficial',
+  description: 'Museum seni rupa modern dan kontemporer',
+  authors: {
+    name: 'Abdullah Ammar',
+    url: 'https://abdmmar.com',
+  },
+  twitter: {
+    title: 'Galeri Nasional Indonesia - Unofficial',
+    description: 'Museum seni rupa modern dan kontemporer',
+  },
+  keywords: [
+    'Seni',
+    'Galeri',
+    'GalNas',
+    'Galeri Nasional Indonesia',
+    'Open Source',
+    'Sumber Terbuka',
+  ],
+  openGraph: {
+    title: 'Galeri Nasional Indonesia - Unofficial',
+    description: 'Museum seni rupa modern dan kontemporer',
+    url: 'https://galnas.abdmmar.com',
+    type: 'website',
+    images: ['/galnas.webp', '/galnas.jpg'],
+  },
+}
 
 const createColumns = (data: Array<CollectionType>) => {
   let col = 0
