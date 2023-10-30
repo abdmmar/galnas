@@ -2,13 +2,13 @@ import { Client, neonConfig } from '@neondatabase/serverless';
 import ws from 'ws';
 
 import galnas from '../../data/galeri-nasional.json';
-import { Collection as CollectionType } from '../_types/collection';
+import { CreateCollectionSchema } from '../_types/collection';
 import * as CollectionDataSource from './collection';
 
 async function seed() {
   neonConfig.webSocketConstructor = ws
 
-  const collections: Array<Omit<CollectionType, "id">> = [
+  const collections: Array<Omit<CreateCollectionSchema, "id">> = [
     ...galnas.paintings.data.map((item) => ({
       ...item,
       classification: 'painting',
