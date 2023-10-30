@@ -59,8 +59,16 @@ export async function generateMetadata(
       collection.data.year,
       ...artistsName,
     ],
+    twitter: {
+      title: collection.data.title,
+      description: collection.data.description,
+    },
     creator: artistsName[0],
     openGraph: {
+      title: collection.data.title,
+      description: collection.data.description,
+      url: 'https://galnas.abdmmar.com',
+      type: 'website',
       images: [
         getImageCDN(`webp/${collection.data.image}.webp`),
         getImageCDN(`${collection.data.image}.jpg`),
