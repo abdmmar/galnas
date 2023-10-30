@@ -1,5 +1,6 @@
 import { Modal } from '@/app/_components/modal'
 import * as CollectionDataSource from '@/app/_db/collection'
+import { getImageCDN } from '@/lib/utils'
 import { ImageIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
 
@@ -47,7 +48,7 @@ export default async function CollectionModal({
                 sizes="100vw"
                 width={500}
                 className="max-h-[650px] object-cover md:max-h-[550px]"
-                src={`https://cdn.statically.io/img/galnas.abdmmar.com/images/webp/${collection.image}.webp`}
+                src={getImageCDN(`webp/${collection.image}.webp`)}
                 style={{
                   height: 'auto',
                   width: '100%',

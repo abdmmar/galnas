@@ -1,7 +1,7 @@
 'use client'
 
 import { Collection as CollectionType } from '@/app/_types/collection'
-import { cn } from '@/lib/utils'
+import { cn, getImageCDN } from '@/lib/utils'
 import { ImageIcon } from '@radix-ui/react-icons'
 import { motion, useAnimation } from 'framer-motion'
 import Image from 'next/image'
@@ -44,7 +44,7 @@ export function CollectionCard({
           loading={priority ? 'eager' : 'lazy'}
           height={300}
           sizes="100vw"
-          src={`https://cdn.statically.io/img/galnas.abdmmar.com/images/webp/${collection.image}.webp`}
+          src={getImageCDN(`webp/${collection.image}.webp`)}
           style={{
             height: 'auto',
             width: '100%',
