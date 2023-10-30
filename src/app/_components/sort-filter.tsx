@@ -12,6 +12,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 type Sort = '' | 'title:asc' | 'title:desc' | 'year:asc' | 'year:desc'
 
@@ -47,9 +48,18 @@ export function SortFilter() {
   return (
     <Select onValueChange={onChange} value={sort}>
       <div className="relative">
-        <SelectTrigger>
-          <span className="sr-only">Sort filter</span>
-        </SelectTrigger>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <SelectTrigger>
+                <span className="sr-only">Sort Collection</span>
+              </SelectTrigger>
+            </TooltipTrigger>
+            <TooltipContent className="px-1 py-1" sideOffset={0}>
+              <span>Sort Collection</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <AnimatePresence>
           {isSorted && <ResetButton onClick={() => onChange('')} tooltip="Reset Urutkan" />}
         </AnimatePresence>
