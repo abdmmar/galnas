@@ -47,7 +47,7 @@ export default async function CollectionModal({
                 sizes="100vw"
                 width={500}
                 className="max-h-[650px] object-cover md:max-h-[550px]"
-                src={'/images/webp/' + collection?.image?.replaceAll(/(\.(jpe?g|png)$)/gi, '.webp')}
+                src={`https://cdn.statically.io/img/galnas.abdmmar.com/images/webp/${collection.image}.webp`}
                 style={{
                   height: 'auto',
                   width: '100%',

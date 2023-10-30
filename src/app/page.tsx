@@ -29,7 +29,7 @@ const getCollections = React.cache(async (searchParams: SearchParams) => {
   const sortParams = searchParams.sort
   const sortValue = sortParams ? sortParams.split(':') : undefined
 
-  return await CollectionService.get({
+  const result = await CollectionService.get({
     title: searchParams.title,
     classification: searchParams.classification?.split(','),
     medium: searchParams.medium?.split(','),
@@ -38,17 +38,18 @@ const getCollections = React.cache(async (searchParams: SearchParams) => {
       value: sortValue[1],
     },
   })
+  const data = (await result.json()) as CollectionService.GetResponse
+  return data
 })
 
 export default async function Home({ searchParams }: Props) {
   const result = await getCollections(searchParams)
-  const response = (await result.json()) as CollectionService.GetResponse
 
-  if (response.status === 'error') {
+  if (result.status === 'error') {
     return <p>Oops there&apos;s an error</p>
   }
 
-  const collections = response.data.items
+  const collections = result.data.items
   const columns = createColumns(collections)
 
   return (

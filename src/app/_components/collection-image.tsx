@@ -44,12 +44,13 @@ export function CollectionCard({
           loading={priority ? 'eager' : 'lazy'}
           height={300}
           sizes="100vw"
-          src={'/images/webp/' + collection.image.replaceAll(/(\.(jpe?g|png)$)/gi, '.webp')}
+          src={`https://cdn.statically.io/img/galnas.abdmmar.com/images/webp/${collection.image}.webp`}
           style={{
             height: 'auto',
             width: '100%',
           }}
           width={500}
+          priority={priority}
         />
       ) : (
         <div
