@@ -46,3 +46,7 @@ export function debounce<T extends Function>(cb: T, wait = 20) {
   };
   return <T>(<unknown>callable);
 }
+
+export function getImageCDN(fileName: string) {
+  return `https://cdn.statically.io/img/galnas.abdmmar.com/images/${fileName}`
+}
