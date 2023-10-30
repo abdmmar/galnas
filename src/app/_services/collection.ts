@@ -3,13 +3,13 @@ import { NextResponse } from "next/server"
 
 import * as CollectionDataSource from '@/app/_db/collection'
 import { DATABASE_URL } from "@/app/_db/config"
-import { collectionSchema } from "@/app/_schemas/collection"
+import { createCollectionSchema } from "@/app/_schemas/collection"
 import { Collection } from "@/app/_types/collection"
 import { Response } from "@/app/_types/common"
 import { flattenErrors } from "@/lib/utils"
 
 export async function create(input: Collection) {
-  const result = collectionSchema.safeParse(input)
+  const result = createCollectionSchema.safeParse(input)
 
   if (!result.success) {
     return NextResponse.json(

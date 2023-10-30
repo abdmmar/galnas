@@ -1,7 +1,7 @@
 import { Client } from "@neondatabase/serverless";
 
 import { sql } from "@/app/_db/config";
-import { Collection } from "@/app/_types/collection";
+import { Collection, CreateCollectionSchema } from "@/app/_types/collection";
 
 async function createMedium(client: Client, data: string | Array<string>): Promise<Array<string> | undefined> {
   try {
@@ -46,7 +46,7 @@ async function createMedium(client: Client, data: string | Array<string>): Promi
   }
 }
 
-export async function create(client: Client, data: Omit<Collection, "id">) {
+export async function create(client: Client, data: Omit<CreateCollectionSchema, "id">) {
   try {
     await client.query('BEGIN')
 

@@ -10,7 +10,7 @@ const artistSchema = z.object(
   { required_error: 'Artist is required' },
 )
 
-export const collectionSchema = z.object({
+export const createCollectionSchema = z.object({
   title: z
     .string({ required_error: 'Title is required' })
     .nonempty({ message: "Title can't be empty" }),
