@@ -87,7 +87,7 @@ export default async function Home({ searchParams }: Props) {
         <header className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row sm:flex-wrap md:flex-nowrap xl:gap-10">
           <Link
             className="inline-flex w-full items-center justify-between gap-2 py-2 text-sm text-secondary-foreground sm:w-fit sm:justify-normal"
-            href="/doc"
+            href="/galnas-api.hoppscotch.json"
           >
             Dokumentasi
             <span>
