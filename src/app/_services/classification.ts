@@ -10,6 +10,15 @@ export async function get(): Promise<NextResponse<GetResponse>> {
   try {
     const result = await ClassificationDataSource.get()
 
+    if (!result) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'classifications not found',
+        // eslint-disable-next-line unicorn/no-null
+        data: null,
+      })
+    }
+
     return NextResponse.json({
       status: 'ok',
       message: 'successfully get classifications',

@@ -58,6 +58,15 @@ export async function get(input: CollectionDataSource.Params): Promise<NextRespo
     const totalRows = result.rowCount
     const collections = result.rows
 
+    if (!collections || collections.length === 0) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'collections not found',
+        // eslint-disable-next-line unicorn/no-null
+        data: null
+      })
+    }
+
     return NextResponse.json({
       status: 'ok',
       message: 'successfully get collections',
@@ -84,6 +93,15 @@ export async function getById(id: string): Promise<NextResponse<GetByIdResponse>
     const result = await CollectionDataSource.getById(id)
 
     const collection = result[0]
+
+    if (!collection) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'collection not found',
+        // eslint-disable-next-line unicorn/no-null
+        data: null
+      }, { status: 404 })
+    }
 
     return NextResponse.json({
       status: 'ok',
