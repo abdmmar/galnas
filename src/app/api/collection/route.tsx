@@ -1,5 +1,4 @@
 import * as CollectionService from '@/app/_services/collection'
-import { Collection } from '@/app/_types/collection'
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
@@ -15,9 +14,4 @@ export async function GET(request: Request) {
     },
   }
   return await CollectionService.get(params)
-}
-
-export async function POST(request: Request) {
-  const input: Collection = await request.json()
-  return await CollectionService.create(input)
 }
