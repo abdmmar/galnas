@@ -48,5 +48,5 @@ export function debounce<T extends Function>(cb: T, wait = 20) {
 }
 
 export function getImageCDN(fileName: string) {
-  return `https://cdn.statically.io/img/galnas.abdmmar.com/images/${fileName}`
+  return `https://cdn.statically.io/gh/abdmmar/galnas@main/public/images/${fileName}`
 }
